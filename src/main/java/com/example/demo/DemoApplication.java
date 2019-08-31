@@ -13,37 +13,64 @@ import entities.Department;
 import entities.HourContract;
 import entities.Post;
 import entities.Worker;
+import entities.enums.OrderStatus;
 import entities.enums.WorkerLevel;
+import model.entities.Client;
+import model.entities.Order;
+import model.entities.OrderItem;
+import model.entities.Product;
 
 @SpringBootApplication
 public class DemoApplication {
 
 	public static void main(String[] args) throws ParseException {
 
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		Locale.setDefault(Locale.US);
+		Scanner sc = new Scanner(System.in);
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
+		System.out.println("Enter client data:");
+		System.out.print("Name: ");
+		String name = sc.nextLine();
+		System.out.print("Email: ");
+		String email = sc.next();
+		System.out.print("Birth date (DD/MM/YYYY): ");
+		Date birthDate = sdf.parse(sc.next());
 		
-		Comment c1 = new Comment("Have a nice trip!");
-		Comment c2 = new Comment("Wow that's awesome!");
-		Post p1 = new Post(
-				sdf.parse("21/06/2018 13:05:44"), 
-				"Traveling to New Zealand", 
-				"I'm going to visit this wonderful country!", 
-				12);
-		p1.addComment(c1);
-		p1.addComment(c2);
+		Client client = new Client(name, email, birthDate);
 		
-		Comment c3 = new Comment("Good night");
-		Comment c4 = new Comment("May the Force be with you");
-		Post p2 = new Post(
-				sdf.parse("28/07/2018 23:14:19"), 
-				"Good night guys", 
-				"See you tomorrow", 
-				5);
-		p2.addComment(c3);
-		p2.addComment(c4);
+		System.out.println("Enter order data:");
+		System.out.print("Status: ");
+		OrderStatus status = OrderStatus.valueOf(sc.next());
 		
-		System.out.println(p1);
-		System.out.println(p2);
+		Order order = new Order(new Date(), status, client);
+		
+		System.out.print("How many items to this order? ");
+		int n = sc.nextInt();
+		for (int i=1; i<=n; i++) {
+			System.out.println("Enter #" + i + " item data:");
+			System.out.print("Product name: ");
+			sc.nextLine();
+			String productName = sc.nextLine();
+			System.out.print("Product price: ");
+			double productPrice = sc.nextDouble();
+
+			Product product = new Product(productName, productPrice);
+
+			System.out.print("Quantity: ");
+			int quantity = sc.nextInt();
+
+			OrderItem orderItem = new OrderItem(quantity, productPrice, product); 
+
+			order.addItem(orderItem);
+		}
+		
+		System.out.println();
+		System.out.println("ORDER SUMMARY:");
+		System.out.println(order);
+		
+		sc.close();
 	}
+
 
 }
