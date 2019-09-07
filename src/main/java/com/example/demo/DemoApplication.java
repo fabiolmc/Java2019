@@ -1,76 +1,47 @@
 package com.example.demo;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Locale;
 import java.util.Scanner;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import entities.Comment;
-import entities.Department;
-import entities.HourContract;
-import entities.Post;
-import entities.Worker;
-import entities.enums.OrderStatus;
-import entities.enums.WorkerLevel;
-import model.entities.Client;
-import model.entities.Order;
-import model.entities.OrderItem;
-import model.entities.Product;
+import model.entities.Account;
+import model.exceptions.DomainException;
 
 @SpringBootApplication
 public class DemoApplication {
 
 	public static void main(String[] args) throws ParseException {
-
+		
 		Locale.setDefault(Locale.US);
 		Scanner sc = new Scanner(System.in);
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-
-		System.out.println("Enter client data:");
-		System.out.print("Name: ");
-		String name = sc.nextLine();
-		System.out.print("Email: ");
-		String email = sc.next();
-		System.out.print("Birth date (DD/MM/YYYY): ");
-		Date birthDate = sdf.parse(sc.next());
 		
-		Client client = new Client(name, email, birthDate);
+		System.out.println("Enter account data");
+		System.out.print("Number: ");
+		int number = sc.nextInt();
+		System.out.print("Holder: ");
+		sc.nextLine();
+		String holder = sc.nextLine();
+		System.out.print("Initial balance: ");
+		double balance = sc.nextDouble();
+		System.out.print("Withdraw limit: ");
+		double withdrawLimit = sc.nextDouble();
 		
-		System.out.println("Enter order data:");
-		System.out.print("Status: ");
-		OrderStatus status = OrderStatus.valueOf(sc.next());
-		
-		Order order = new Order(new Date(), status, client);
-		
-		System.out.print("How many items to this order? ");
-		int n = sc.nextInt();
-		for (int i=1; i<=n; i++) {
-			System.out.println("Enter #" + i + " item data:");
-			System.out.print("Product name: ");
-			sc.nextLine();
-			String productName = sc.nextLine();
-			System.out.print("Product price: ");
-			double productPrice = sc.nextDouble();
-
-			Product product = new Product(productName, productPrice);
-
-			System.out.print("Quantity: ");
-			int quantity = sc.nextInt();
-
-			OrderItem orderItem = new OrderItem(quantity, productPrice, product); 
-
-			order.addItem(orderItem);
-		}
+		Account acc = new Account(number, holder, balance, withdrawLimit);
 		
 		System.out.println();
-		System.out.println("ORDER SUMMARY:");
-		System.out.println(order);
+		System.out.print("Enter amount for withdraw: ");
+		double amount = sc.nextDouble();
+		try {
+			acc.withdraw(amount);
+			System.out.println("New balance: " + String.format("%.2f", acc.getBalance()));
+		}
+		catch (DomainException e) {
+			System.out.println("Withdraw error: " + e.getMessage());
+		}
 		
 		sc.close();
 	}
-
 
 }
