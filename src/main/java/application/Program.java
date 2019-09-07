@@ -1,4 +1,4 @@
-package com.example.demo;
+package application;
 
 import java.text.ParseException;
 import java.util.Locale;
@@ -10,7 +10,7 @@ import model.entities.Account;
 import model.exceptions.DomainException;
 
 @SpringBootApplication
-public class DemoApplication {
+public class Program {
 
 	public static void main(String[] args) throws ParseException {
 
@@ -44,7 +44,6 @@ public class DemoApplication {
 			System.out.println("Withdraw error: " + e.getMessage());
 		} finally {
 			sc.close();
-			System.out.println("fiz o close");
 		}
 
 	}
